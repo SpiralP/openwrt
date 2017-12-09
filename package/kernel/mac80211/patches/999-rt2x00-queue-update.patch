@@ -1,0 +1,20 @@
+--- a/drivers/net/wireless/ralink/rt2x00/rt2800mmio.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2800mmio.c
+@@ -700,7 +700,7 @@ void rt2800mmio_queue_init(struct data_queue *queue)
+ 
+ 	switch (queue->qid) {
+ 	case QID_RX:
+-		queue->limit = 128;
++		queue->limit = 512;
+ 		queue->data_size = AGGREGATION_SIZE;
+ 		queue->desc_size = RXD_DESC_SIZE;
+ 		queue->winfo_size = rxwi_size;
+@@ -711,7 +711,7 @@ void rt2800mmio_queue_init(struct data_queue *queue)
+ 	case QID_AC_VI:
+ 	case QID_AC_BE:
+ 	case QID_AC_BK:
+-		queue->limit = 64;
++		queue->limit = 512;
+ 		queue->data_size = AGGREGATION_SIZE;
+ 		queue->desc_size = TXD_DESC_SIZE;
+ 		queue->winfo_size = txwi_size;
