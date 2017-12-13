@@ -1,0 +1,27 @@
+sudo: false
+language: cpp
+cache: ccache
+script:
+# for some reason we would hang forever on "checking for a Python interpreter with version >= 2.5..."
+# making language: python, and when testing all versions, only 2.7 passed
+  - source ~/virtualenv/python2.7/bin/activate
+# hacks to not build tools again
+  - 'if [ -f "$HOME/.ccache/staging_dir.tar.xz" ]; then echo extracting staging_dir; tar -xJf "$HOME/.ccache/staging_dir.tar.xz" && echo > tools/Makefile && echo > toolchain/Makefile; fi'
+  - ./scripts/feeds update -a && ./scripts/feeds install luci tcpdump luci-app-fwknopd luci-app-sqm mtr
+  - printf 'CONFIG_TARGET_ramips=y\nCONFIG_TARGET_ramips_rt3883=y\nCONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y\nCONFIG_PACKAGE_luci=y\nCONFIG_PACKAGE_tcpdump=y\nCONFIG_PACKAGE_luci-app-fwknopd=y\nCONFIG_PACKAGE_luci-app-sqm=y\nCONFIG_PACKAGE_mtr=y\nCONFIG_CCACHE=y\n# CONFIG_PER_FEED_REPO_ADD_COMMENTED is not set\n' > .config && make defconfig
+  - 'if [ -f "$HOME/.ccache/staging_dir.tar.xz" ]; then echo compiling from cache; make -j3 V=w && find bin && cat bin/targets/ramips/rt3883/sha256sums; else echo compiling tools; make -j3 tools/compile && make -j3 V=w toolchain/compile; fi'
+before_cache:
+  - 'if [ ! -f "$HOME/.ccache/staging_dir.tar.xz" ]; then echo storing compiled tools in cache; tar -cf - staging_dir | xz -c -3 - > "$HOME/.ccache/staging_dir.tar.xz"; fi'
+deploy:
+  provider: releases
+  api_key:
+    secure: "A3Sozc41nGTcVJMRAWgpGtIdPxa6P3pee7vsn+LOvQk9JBbzBE9o9jw6G0BADfUhEumLr8hon9ybhixtvO2KlJkmTm1t8RYlwL+ymHThZDdIgRsICg+ChrQZEozaAcpnOg2m4nd+mAvS3Q0WhxzR147CoPtHPm1Yecfgr5EL70GZKKiORWtQ5Qdoq+5R8H/q6/scNBVz3SICWJAbE2Sy6Xk+dOaCg2PoncjZQCuOb6nHB29sg/1YshKcxANJH+F6bG7efIN/mL8hUb0FpwEm9PRxLxSmglwYs/19/zf3H2lfW3WFvI6c0cTV17FDNnaik99Yw6IMNJsyKykEodir2v5rpzUX+LXBO18Dsz+VDpbB8EC8COmaeKtAKy/u4eUNmwvWBAEDrVTGQhQ+umUHUEA/Wu5p2OIYTutG1ov5hGLeHumJ0tI0MM4vy+PZRtRI1oZZZQNSavz85756qo1OriN6ixeXPxGpkSCs1h+m+KmntcncxYq12d/d+NWdWleooAaIASQ4pZ4Ow5HkrAOu+Usz7o8o1sdHpq+YvFUTUnogAZWheCy7K2vczKvR30pPjDtLsVwGmSbMuI08n1yMxC+nAZ0KPLNbiSp5QEUdm0gQ78y76RPqxS3vnhEdUo9tciYv7qph+SGjbtt8ykRdleugtu5L8Lpq3iNh22r61eU="
+  file:
+    - "bin/targets/ramips/rt3883/openwrt-ramips-rt3883-rt-n56u-squashfs-sysupgrade.bin"
+    - "bin/targets/ramips/rt3883/sha256sums"
+  skip_cleanup: true
+  on:
+    branch: master
+branches:
+  only:
+  - master
