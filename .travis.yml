@@ -7,8 +7,8 @@ script:
   - source ~/virtualenv/python2.7/bin/activate
 # hacks to not build tools again
   - 'if [ -f "$HOME/.ccache/staging_dir.tar.xz" ]; then echo extracting staging_dir; tar -xJf "$HOME/.ccache/staging_dir.tar.xz" && echo > tools/Makefile && echo > toolchain/Makefile; fi'
-  - ./scripts/feeds update -a && ./scripts/feeds install luci luci-app-uhttpd luci-app-fwknopd luci-app-sqm luci-app-adblock libustream-mbedtls mtr tcpdump
-  - printf 'CONFIG_TARGET_ramips=y\nCONFIG_TARGET_ramips_rt3883=y\nCONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y\nCONFIG_PACKAGE_luci=y\nCONFIG_PACKAGE_luci-app-uhttpd=y\nCONFIG_PACKAGE_luci-app-fwknopd=y\nCONFIG_PACKAGE_luci-app-sqm=y\nCONFIG_PACKAGE_luci-app-adblock=y\nCONFIG_PACKAGE_libustream-mbedtls=y\nCONFIG_PACKAGE_mtr=y\nCONFIG_PACKAGE_tcpdump=y\nCONFIG_CCACHE=y\n# CONFIG_PER_FEED_REPO_ADD_COMMENTED is not set\n' > .config && make defconfig
+  - ./scripts/feeds update -a && ./scripts/feeds install luci-ssl luci-app-uhttpd luci-app-fwknopd luci-app-sqm luci-app-adblock libustream-mbedtls mtr tcpdump
+  - printf 'CONFIG_TARGET_ramips=y\nCONFIG_TARGET_ramips_rt3883=y\nCONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y\nCONFIG_PACKAGE_luci-ssl=y\nCONFIG_PACKAGE_luci-app-uhttpd=y\nCONFIG_PACKAGE_luci-app-fwknopd=y\nCONFIG_PACKAGE_luci-app-sqm=y\nCONFIG_PACKAGE_luci-app-adblock=y\nCONFIG_PACKAGE_libustream-mbedtls=y\nCONFIG_PACKAGE_mtr=y\nCONFIG_PACKAGE_tcpdump=y\nCONFIG_CCACHE=y\n# CONFIG_PER_FEED_REPO_ADD_COMMENTED is not set\n' > .config && make defconfig
   - 'if [ -f "$HOME/.ccache/staging_dir.tar.xz" ]; then echo compiling from cache; make -j3 V=w && find bin && cat bin/targets/ramips/rt3883/sha256sums; else echo compiling tools; make -j3 tools/compile && make -j3 V=w toolchain/compile; fi'
 before_cache:
   - 'if [ ! -f "$HOME/.ccache/staging_dir.tar.xz" ]; then echo storing compiled tools in cache; tar -cf - staging_dir | xz -c -3 - > "$HOME/.ccache/staging_dir.tar.xz"; fi'
