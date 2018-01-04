@@ -24,7 +24,6 @@ script:
         luci-app-fwknopd \
         luci-app-sqm \
         luci-app-adblock \
-        luci-app-mwan3 \
         libustream-mbedtls \
         kmod-rt2x00-usb \
         kmod-rt2800-usb \
@@ -44,7 +43,6 @@ script:
     CONFIG_PACKAGE_luci-app-fwknopd=y
     CONFIG_PACKAGE_luci-app-sqm=y
     CONFIG_PACKAGE_luci-app-adblock=y
-    CONFIG_PACKAGE_luci-app-mwan3=y
     CONFIG_PACKAGE_libustream-mbedtls=y
     CONFIG_PACKAGE_kmod-rt2x00-usb=y
     CONFIG_PACKAGE_kmod-rt2800-usb=y
