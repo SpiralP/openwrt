@@ -1,7 +1,9 @@
 sudo: false
 language: cpp
 cache: ccache
-script:
+
+# in before_script travis doesn't strip indent spaces on literal multiline strings, works in script tho
+before_script:
 # for some reason we would hang forever on "checking for a Python interpreter with version >= 2.5..."
 # making language: python, and when testing all versions, only 2.7 passed
   - source ~/virtualenv/python2.7/bin/activate
@@ -14,43 +16,30 @@ script:
         && echo > toolchain/Makefile
     fi
   - |
-    ./scripts/feeds update -a \
-      && ./scripts/feeds install \
-        hostapd \
-        wpa-supplicant \
-        odhcpd \
-        luci-ssl \
-        luci-app-uhttpd \
-        luci-app-fwknopd \
-        luci-app-sqm \
-        luci-app-adblock \
-        libustream-mbedtls \
-        kmod-rt2x00-usb \
-        kmod-rt2800-usb \
-        mtr \
-        tcpdump
+    packages="
+      hostapd
+      wpa-supplicant
+      odhcpd
+      luci-ssl
+      luci-app-uhttpd
+      luci-app-fwknopd
+      luci-app-sqm
+      luci-app-adblock
+      libustream-mbedtls
+      kmod-rt2x00-usb
+      kmod-rt2800-usb
+      mtr
+      tcpdump
+      "
   - |
-    printf 'CONFIG_TARGET_ramips=y
-    CONFIG_TARGET_ramips_rt3883=y
-    CONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y
-    CONFIG_PACKAGE_hostapd=y
-    CONFIG_PACKAGE_wpa-supplicant=y
-    # CONFIG_PACKAGE_wpad-mini is not set
-    CONFIG_PACKAGE_odhcpd=y
-    # CONFIG_PACKAGE_odhcpd-ipv6only is not set
-    CONFIG_PACKAGE_luci-ssl=y
-    CONFIG_PACKAGE_luci-app-uhttpd=y
-    CONFIG_PACKAGE_luci-app-fwknopd=y
-    CONFIG_PACKAGE_luci-app-sqm=y
-    CONFIG_PACKAGE_luci-app-adblock=y
-    CONFIG_PACKAGE_libustream-mbedtls=y
-    CONFIG_PACKAGE_kmod-rt2x00-usb=y
-    CONFIG_PACKAGE_kmod-rt2800-usb=y
-    CONFIG_PACKAGE_mtr=y
-    CONFIG_PACKAGE_tcpdump=y
-    CONFIG_CCACHE=y
-    # CONFIG_PER_FEED_REPO_ADD_COMMENTED is not set
-    ' > .config && make defconfig
+    ./scripts/feeds update -a \
+      && ./scripts/feeds install $packages
+  - printf 'CONFIG_TARGET_ramips=y\nCONFIG_TARGET_ramips_rt3883=y\nCONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y\n# CONFIG_PACKAGE_wpad-mini is not set\n# CONFIG_PACKAGE_odhcpd-ipv6only is not set\nCONFIG_CCACHE=y\n# CONFIG_PER_FEED_REPO_ADD_COMMENTED is not set\n' > .config
+  - |
+    for package in $packages; do
+      printf 'CONFIG_PACKAGE_%s=y\n' "$package" >> .config
+    done && make defconfig
+script:
   - |
     if [ -f "$HOME/.ccache/staging_dir.tar.xz" ]; then
       echo compiling from cache
@@ -62,12 +51,14 @@ script:
         make -j3 tools/compile \
           && make -j3 V=w toolchain/compile
       fi
+
 before_cache:
   - |
     if [ ! -f "$HOME/.ccache/staging_dir.tar.xz" ]; then
       echo storing compiled tools in cache
       tar -cf - staging_dir | xz -c -3 - > "$HOME/.ccache/staging_dir.tar.xz"
     fi
+
 deploy:
   provider: releases
   api_key:
@@ -78,6 +69,7 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
+
 branches:
   only:
   - master
