@@ -33,6 +33,8 @@ before_script:
       mtr
       tcpdump
       iptables-mod-nflog
+      netcat
+      luajit
       "
   - |
     ./scripts/feeds update -a \
