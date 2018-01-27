@@ -1,9 +1,14 @@
-sudo: false
+sudo: required
 language: cpp
 cache: ccache
 
 # in before_script travis doesn't strip indent spaces on literal multiline strings, works in script tho
 before_script:
+# need sys/cdefs.h
+  - |
+    sudo apt-get -y update \
+      && sudo apt-get -y install libc6-dev-i386
+
 # for some reason we would hang forever on "checking for a Python interpreter with version >= 2.5..."
 # making language: python, and when testing all versions, only 2.7 passed
   - source ~/virtualenv/python2.7/bin/activate
