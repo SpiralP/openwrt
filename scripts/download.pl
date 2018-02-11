@@ -82,8 +82,8 @@ sub download_cmd($) {
 	}
 
 	return $have_curl
-		? (qw(curl -f --connect-timeout 20 --retry 5 --location --insecure), shellwords($ENV{CURL_OPTIONS} || ''), $url)
-		: (qw(wget --tries=5 --timeout=20 --no-check-certificate --output-document=-), shellwords($ENV{WGET_OPTIONS} || ''), $url)
+		? (qw(curl --fail --connect-timeout 20 --retry 5 --location --silent --show-error), shellwords($ENV{CURL_OPTIONS} || ''), $url)
+		: (qw(wget --tries=5 --timeout=20 --output-document=-), shellwords($ENV{WGET_OPTIONS} || ''), $url)
 	;
 }
 
