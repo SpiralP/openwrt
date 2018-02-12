@@ -29,10 +29,8 @@ before_script:
       luci-app-uhttpd
       luci-app-fwknopd
       luci-app-sqm
-      luci-app-adblock
       luci-app-wol
       luci-app-ddns
-      libustream-mbedtls
       kmod-rt2x00-usb
       kmod-rt2800-usb
       mtr
