@@ -29,7 +29,6 @@ before_script:
       luci-app-uhttpd
       luci-app-fwknopd
       luci-app-wol
-      luci-app-ddns
       mtr
       tcpdump
       netcat
