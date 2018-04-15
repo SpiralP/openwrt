@@ -36,6 +36,7 @@ before_script:
       tcpdump
       netcat
       luajit
+      iptables-mod-nflog
       "
   - |
     ./scripts/feeds update -a \
