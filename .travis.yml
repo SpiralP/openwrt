@@ -58,8 +58,6 @@ script:
         make -j3 tools/compile \
           && make -j3 V=w toolchain/compile
       fi
-
-before_cache:
   - |
     if [ ! -f "$HOME/.ccache/staging_dir.tar.xz" ]; then
       echo storing compiled tools in cache
