@@ -17,9 +17,9 @@ before_script:
   - source ~/virtualenv/python2.7/bin/activate
 # hacks to not build tools again
   - |
-    if [ -f "$HOME/.ccache/staging_dir.tar.xz" ]; then
+    if [ -f "$HOME/.ccache/staging_dir.tar.gz" ]; then
       echo extracting staging_dir
-      tar -xJf "$HOME/.ccache/staging_dir.tar.xz" \
+      tar -xzf "$HOME/.ccache/staging_dir.tar.gz" \
         && echo > tools/Makefile \
         && echo > toolchain/Makefile
     fi
@@ -48,7 +48,7 @@ before_script:
     done && make defconfig
 script:
   - |
-    if [ -f "$HOME/.ccache/staging_dir.tar.xz" ]; then
+    if [ -f "$HOME/.ccache/staging_dir.tar.gz" ]; then
       echo compiling from cache
       make -j3 V=w \
         && find bin \
@@ -59,9 +59,9 @@ script:
           && make -j3 V=w toolchain/compile
       fi
   - |
-    if [ ! -f "$HOME/.ccache/staging_dir.tar.xz" ]; then
+    if [ ! -f "$HOME/.ccache/staging_dir.tar.gz" ]; then
       echo storing compiled tools in cache
-      tar -cf - staging_dir | xz -c -3 - > "$HOME/.ccache/staging_dir.tar.xz"
+      tar -cf - staging_dir | gzip -c - > "$HOME/.ccache/staging_dir.tar.gz"
     fi
 
 deploy:
