@@ -37,6 +37,7 @@ before_script:
       netcat
       luajit
       iptables-mod-nflog
+      iftop
       "
   - |
     ./scripts/feeds update -a \
