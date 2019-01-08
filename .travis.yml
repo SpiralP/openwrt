@@ -42,7 +42,7 @@ before_script:
   - |
     ./scripts/feeds update -a \
       && ./scripts/feeds install $packages
-  - printf 'CONFIG_TARGET_ramips=y\nCONFIG_TARGET_ramips_rt3883=y\nCONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y\n# CONFIG_PACKAGE_wpad-mini is not set\n# CONFIG_PACKAGE_odhcpd-ipv6only is not set\nCONFIG_CCACHE=y\nCONFIG_PCAP_HAS_NETFILTER=y\n# CONFIG_PER_FEED_REPO_ADD_COMMENTED is not set\n' > .config
+  - printf 'CONFIG_TARGET_ramips=y\nCONFIG_TARGET_ramips_rt3883=y\nCONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y\n# CONFIG_PACKAGE_wpad-mini is not set\n# CONFIG_PACKAGE_odhcpd-ipv6only is not set\nCONFIG_CCACHE=y\nCONFIG_PCAP_HAS_NETFILTER=y\n' > .config
   - |
     for package in $packages; do
       printf 'CONFIG_PACKAGE_%s=y\n' "$package" >> .config
