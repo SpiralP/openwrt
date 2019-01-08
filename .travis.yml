@@ -56,7 +56,7 @@ script:
         && cat bin/targets/ramips/rt3883/sha256sums
       else
         echo compiling tools
-        make -j3 tools/compile \
+        make -j3 V=w tools/compile \
           && make -j3 V=w toolchain/compile
       fi
   - |
