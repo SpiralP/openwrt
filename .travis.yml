@@ -51,11 +51,13 @@ script:
   - |
     if [ -f "$HOME/.ccache/staging_dir.tar.gz" ]; then
       echo compiling from cache
+      make download
       make -j3 V=w \
         && find bin \
         && cat bin/targets/ramips/rt3883/sha256sums
       else
         echo compiling tools
+        make download
         make -j3 V=w tools/compile \
           && make -j3 V=w toolchain/compile
       fi
