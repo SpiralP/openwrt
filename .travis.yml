@@ -10,6 +10,11 @@ addons:
     - gcc-multilib
     - g++-multilib
 
+# exit on error, print executed commands
+before_install: 
+  - set -e
+  - set -x
+
 # in before_script travis doesn't strip indent spaces on literal multiline strings, works in script tho
 before_script:
 # for some reason we would hang forever on "checking for a Python interpreter with version >= 2.5..."
@@ -66,6 +71,9 @@ script:
       echo storing compiled tools in cache
       tar -cf - staging_dir | gzip -c - > "$HOME/.ccache/staging_dir.tar.gz"
     fi
+
+after_script: 
+  - set +e
 
 deploy:
   provider: releases
