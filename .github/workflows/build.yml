@@ -20,6 +20,20 @@ jobs:
           ccache -F 0
           ccache -M 0
 
+      - name: Cache staging_dir
+        uses: actions/cache@preview
+        with:
+          path: staging_dir
+          key: staging_dir
+          restore-keys: staging_dir
+
+      - name: Cache ccache
+        uses: actions/cache@preview
+        with:
+          path: ~/.ccache
+          key: ccache
+          restore-keys: ccache
+
       - name: Update feeds
         run: |
           ./scripts/feeds update -a
