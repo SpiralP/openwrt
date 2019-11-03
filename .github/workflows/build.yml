@@ -51,4 +51,3 @@ jobs:
       - name: Finish
         run: |
           cat bin/targets/ramips/rt3883/sha256sums
-          ls -lh bin/targets/ramips/rt3883/openwrt-ramips-rt3883-rt-n56u-squashfs-sysupgrade.bin
