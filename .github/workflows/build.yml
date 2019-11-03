@@ -17,6 +17,8 @@ jobs:
           sudo apt-get -y install libelf-dev ecj fastjar java-propose-classpath
           sudo apt-get -y install build-essential libncursesw5-dev python unzip
           sudo apt-get -y install ncurses-dev ccache
+          ccache -F 0
+          ccache -M 0
 
       - name: Update feeds
         run: |
