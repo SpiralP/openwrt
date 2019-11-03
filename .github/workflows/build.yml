@@ -21,18 +21,18 @@ jobs:
           ccache -M 0
 
       - name: Cache staging_dir
-        uses: SpiralP/cache@preview
+        uses: actions/cache@preview
         with:
           path: staging_dir
-          key: staging_dir
-          restore-keys: staging_dir
+          key: staging_dir-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
+          restore-keys: staging_dir-
 
       - name: Cache ccache
-        uses: SpiralP/cache@preview
+        uses: actions/cache@preview
         with:
           path: ~/.ccache
-          key: ccache
-          restore-keys: ccache
+          key: ccache-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
+          restore-keys: ccache-
 
       - name: Update feeds
         run: |
@@ -51,3 +51,11 @@ jobs:
       - name: Finish
         run: |
           cat bin/targets/ramips/rt3883/sha256sums
+          ls -lh bin/targets/ramips/rt3883/openwrt-ramips-rt3883-asus_rt-n56u-squashfs-sysupgrade.bin
+          rm -rf staging_dir/*/ccache
+
+      - name: Bap
+        run: |
+          du -sh staging_dir
+          du -sh staging_dir/*/
+          du -sh staging_dir/*/*/
