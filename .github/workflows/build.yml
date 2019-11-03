@@ -1,0 +1,28 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install packages
+        run: |
+          sudo apt-get -y install ncurses-dev
+
+      - name: Update feeds
+        run: |
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: make defconfig
+        run: |
+          printf 'CONFIG_TARGET_ramips=y\nCONFIG_TARGET_ramips_rt3883=y\nCONFIG_TARGET_ramips_rt3883_DEVICE_rt-n56u=y\n# CONFIG_PACKAGE_wpad-mini is not set\n# CONFIG_PACKAGE_odhcpd-ipv6only is not set\nCONFIG_CCACHE=y\nCONFIG_PCAP_HAS_NETFILTER=y\n' > .config
+          make defconfig
+
+      - name: make download
+        run: |
+          make -j3 V=w download
