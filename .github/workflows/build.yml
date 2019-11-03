@@ -21,14 +21,14 @@ jobs:
           ccache -M 0
 
       - name: Cache staging_dir
-        uses: actions/cache@preview
+        uses: SpiralP/cache@preview
         with:
           path: staging_dir
           key: staging_dir
           restore-keys: staging_dir
 
       - name: Cache ccache
-        uses: actions/cache@preview
+        uses: SpiralP/cache@preview
         with:
           path: ~/.ccache
           key: ccache
