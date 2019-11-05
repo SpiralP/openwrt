@@ -43,19 +43,26 @@ jobs:
         run: make defconfig
 
       - name: make download
+        if: startsWith(github.ref, 'refs/tags/')
         run: make -j4 V=w download
 
       - name: make
+        if: startsWith(github.ref, 'refs/tags/')
         run: make -j4 V=w
 
       - name: Finish
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           cat bin/targets/ramips/rt3883/sha256sums
           ls -lh bin/targets/ramips/rt3883/openwrt-ramips-rt3883-asus_rt-n56u-squashfs-sysupgrade.bin
           rm -rf staging_dir/*/ccache
 
-      - name: Bap
-        run: |
-          du -sh staging_dir
-          du -sh staging_dir/*/
-          du -sh staging_dir/*/*/
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            bin/targets/ramips/rt3883/sha256sums
+            bin/targets/ramips/rt3883/openwrt-ramips-rt3883-asus_rt-n56u-squashfs-sysupgrade.bin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
