@@ -871,7 +871,6 @@ define Device/tplink_archer-c20i
   TPLINK_HWID := 0xc2000001
   TPLINK_HWREV := 58
   IMAGES += factory.bin
-  DEVICE_PACKAGES := kmod-mt76x0e
   DEVICE_MODEL := Archer C20i
   DEVICE_PACKAGES := kmod-mt76x0e kmod-usb2 kmod-usb-ohci
   SUPPORTED_DEVICES += c20i
@@ -937,6 +936,25 @@ define Device/tplink_archer-mr200
   SUPPORTED_DEVICES += mr200
 endef
 TARGET_DEVICES += tplink_archer-mr200
+
+define Device/tplink_re200-v1
+  SOC := mt7620a
+  DEVICE_VENDOR := TP-Link
+  DEVICE_MODEL := RE200
+  DEVICE_VARIANT := v1
+  DEVICE_PACKAGES := kmod-mt76x0e
+  IMAGES += factory.bin
+  IMAGE/sysupgrade.bin := tplink-v1-image sysupgrade -e -O | append-metadata
+  IMAGE/factory.bin := tplink-v1-image factory -e -O
+  IMAGE_SIZE := 7936k
+  KERNEL := $(KERNEL_DTB)
+  KERNEL_INITRAMFS := $(KERNEL_DTB) | tplink-v1-header -e -O
+  TPLINK_HWID := 0x02000001
+  TPLINK_HWREV := 0x1
+  TPLINK_HEADER_VERSION := 1
+  TPLINK_FLASHLAYOUT := 8Mmtk
+endef
+TARGET_DEVICES += tplink_re200-v1
 
 define Device/vonets_var11n-300
   SOC := mt7620n
