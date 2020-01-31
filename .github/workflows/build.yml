@@ -21,18 +21,25 @@ jobs:
           ccache -M 0
 
       - name: Cache staging_dir
-        uses: actions/cache@preview
+        uses: actions/cache@v1
         with:
           path: staging_dir
           key: staging_dir-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
           restore-keys: staging_dir-
 
       - name: Cache ccache
-        uses: actions/cache@preview
+        uses: actions/cache@v1
         with:
           path: ~/.ccache
           key: ccache-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
           restore-keys: ccache-
+
+      - name: Cache dl
+        uses: actions/cache@v1
+        with:
+          path: dl
+          key: dl-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
+          restore-keys: dl-
 
       - name: Update feeds
         run: |
@@ -43,8 +50,10 @@ jobs:
         run: make defconfig
 
       - name: make download
-        if: startsWith(github.ref, 'refs/tags/')
         run: make -j4 V=w download
+        
+      - name: make tools
+        run: make -j4 V=w tools/compile && make -j4 V=w toolchain/compile
 
       - name: make
         if: startsWith(github.ref, 'refs/tags/')
