@@ -24,21 +24,21 @@ jobs:
         uses: actions/cache@v1
         with:
           path: staging_dir
-          key: staging_dir-${{ env.GITHUB_SHA }}
+          key: staging_dir-${{ github.sha }}
           restore-keys: staging_dir-
 
       - name: Cache ccache
         uses: actions/cache@v1
         with:
           path: ~/.ccache
-          key: ccache-${{ env.GITHUB_SHA }}
+          key: ccache-${{ github.sha }}
           restore-keys: ccache-
 
       - name: Cache dl
         uses: actions/cache@v1
         with:
           path: dl
-          key: dl-${{ env.GITHUB_SHA }}
+          key: dl-${{ github.sha }}
           restore-keys: dl-
 
       - name: Update feeds
