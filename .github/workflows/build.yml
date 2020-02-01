@@ -26,21 +26,21 @@ jobs:
         with:
           path: staging_dir
           key: staging_dir2-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
-          restore-keys: staging_dir-
+          restore-keys: staging_dir2-
 
       - name: Cache ccache
         uses: actions/cache@v1
         with:
           path: ~/.ccache
           key: ccache2-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
-          restore-keys: ccache-
+          restore-keys: ccache2-
 
       - name: Cache dl
         uses: actions/cache@v1
         with:
           path: dl
           key: dl2-${{ hashFiles(format('{0}{1}', github.workspace, '/.config')) }}
-          restore-keys: dl-
+          restore-keys: dl2-
 
       - name: Update feeds
         run: |
