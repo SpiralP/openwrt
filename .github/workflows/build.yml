@@ -21,6 +21,7 @@ jobs:
           ccache -M 0
 
       - name: Cache staging_dir
+        id: cache_staging_dir
         uses: actions/cache@v1
         with:
           path: staging_dir
@@ -52,7 +53,12 @@ jobs:
       - name: make download
         run: make -j4 V=w download
         
+      - name: don't build tools
+        if: steps.cache_staging_dir.outputs.cache-hit == 'true'
+        run: echo > tools/Makefile && echo > toolchain/Makefile
+        
       - name: make tools
+        if: steps.cache_staging_dir.outputs.cache-hit != 'true'
         run: make -j4 V=w tools/compile && make -j4 V=w toolchain/compile
 
       - name: make
